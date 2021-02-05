@@ -7,19 +7,44 @@ module.exports =
 
 const core = __nccwpck_require__(186);
 const github = __nccwpck_require__(438);
+const https = __nccwpck_require__(211)
 
-try {
-  // `who-to-greet` input defined in action metadata file
-  const nameToGreet = core.getInput('who-to-greet');
-  console.log(`Hello ${nameToGreet}!`);
-  const time = (new Date()).toTimeString();
-  core.setOutput("time", time);
-  // Get the JSON webhook payload for the event that triggered the workflow
-  const payload = JSON.stringify(github.context.payload, undefined, 2)
-  console.log(`The event payload: ${payload}`);
-} catch (error) {
-  core.setFailed(error.message);
+const githubToken = core.getInput('github_token');
+const repo = core.getInput('repo');
+
+const requestOptions = {
+  hostname: 'api.github.com',
+  path: `/repos/${repo}`,
+  headers: { 
+    'User-Agent': 'Mozilla/5.0',
+  }
+};
+if (githubToken) {
+  console.log("Use GITHUB_TOKEN to get release data.");
+  requestOptions.headers['Authorization'] = `token: ${githubToken}`
+} else {
+  console.log("GITHUB_TOKEN is not available. Subsequent GitHub API call may fail due to API limit.");
 }
+
+const repoRequest = https.request(requestOptions, res => {
+  let responseData = '';
+  res.on('data', (d) => {
+    responseData += d;
+  })
+  res.on('end', () => {
+    const response = JSON.parse(responseData);
+    const stars = response.stargazers_count;
+    const license = response.license.name;
+    console.log(`Repo has ${stars} ⭐️ and is released under ${license} license`)
+    core.setOutput("stars", stars);
+    core.setOutput("license", license);
+  })
+})
+repoRequest.on("error", () => {
+  core.setFailed("Failed to fetch GitHub");
+})
+repoRequest.end()
+
 
 /***/ }),
 
