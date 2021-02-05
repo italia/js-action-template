@@ -12,26 +12,33 @@ A sample action to get GitHub star counts and license from a given repository.
 ## Examples
 
 Include this action in your repo by creating 
-`.github/workflows/docker-action-template.yml`and edit where needed:
+`.github/workflows/js-action-template.yml`and edit where needed:
 
 ```yml
 on: [push, pull_request]
 
 jobs:
-  publiccode_validation:
+  examplejob:
     runs-on: ubuntu-latest
     name: Get Stars and License
     steps:
     - uses: actions/checkout@v2
-    - uses: italia/docker-action-template@v1
+    - uses: italia/js-action-template@v1
       with:
         repo: "italia/publiccode-parser-action"
 ```
 
 ## Build the action
 
+Install dependencies
+
 ```sh
 npm i
+```
+
+Build the action
+
+```sh
 npm run build
 ```
 
