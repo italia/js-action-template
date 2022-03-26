@@ -55,8 +55,6 @@ npm run build
 Contributing is always appreciated.
 Feel free to open issues, fork or submit a Pull Request.
 If you want to know more about how to add new fields, check out [CONTRIBUTING.md](CONTRIBUTING.md).
-In order to support other country-specific extensions in addition to Italy some
-refactoring might be needed.
 
 ## Maintainers
 
