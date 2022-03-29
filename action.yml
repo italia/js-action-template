@@ -6,6 +6,7 @@ inputs:
   github_token:
     description: 'GITHUB_TOKEN'
     default: '${{ github.token }}'
+    required: false
   repo:
     description: 'GitHub repository. e.g. italia/publiccode-parser-action'
     default: '${{ github.repository }}'
